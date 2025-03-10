@@ -1,9 +1,7 @@
 import 'dart:io';
-
 import 'package:cisco/register_qr.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'qr_scanner.dart'; // QR 스캐너 페이지 추가
 
 void main() {
   runApp(const MyApp());
@@ -26,7 +24,6 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
   final String title;
 
   @override
@@ -34,7 +31,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String deviceInfo = "등록된 기기 없음"; // QR 코드 스캔 결과 저장
+  List<Map<String, dynamic>> listRegistered = []; // 등록된 기기 리스트
+  String deviceInfo = "등록된 기기 없음"; // 등록된 기기 개수 표시
+
+  void updateDeviceInfo() {
+    setState(() {
+      deviceInfo = listRegistered.isEmpty
+          ? "등록된 기기 없음"
+          : "등록된 기기 수: ${listRegistered.length}";
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,58 +51,45 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Column(
         children: [
-          // 상단 이미지 추가
           Expanded(
-            flex: 3, // 화면의 3/5 차지
+            flex: 3,
             child: Image.asset(
-              'images/main_image.jpg', // assets 폴더에 이미지 추가 필요
+              'images/main_image.jpg',
               fit: BoxFit.cover,
               width: double.infinity,
             ),
           ),
-
-          // 등록 기기 정보 표시
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 16),
-            color: Colors.grey[300], // 배경색 추가
+            color: Colors.grey[300],
             child: Text(
               deviceInfo,
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
-
-          // 하단 버튼 영역
           Expanded(
-            flex: 2, // 화면의 2/5 차지
+            flex: 2,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 buildWideButton(context, "QR 등록", Colors.blue, () async {
-                  final scannedData = await Navigator.push(
+                  await Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const QRScannerPage()),
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          RegisterQRPage(listRegistered: listRegistered),
+                    ),
                   );
-
-                  // QR 코드 결과를 받아와 등록 기기 정보 업데이트
-                  if (scannedData != null) {
-                    setState(() {
-                      deviceInfo = "등록된 기기: $scannedData";
-                    });
-                  }
+                  updateDeviceInfo(); // QR 등록 후 등록 개수 업데이트
                 }),
-                buildWideButton(context, "지도로 이동", Colors.green, () {
-                  // 지도 화면 이동 기능 추가 가능
-                  Navigator.push(
-                      context, MaterialPageRoute(builder: (context) => RegisterQRPage())
-                  );
-                }),
+                buildWideButton(context, "지도로 이동", Colors.green, () {}),
                 buildWideButton(context, "나가기", Colors.red, () {
                   if (Platform.isAndroid) {
-                    SystemNavigator.pop(); // 안드로이드에서는 이걸로 앱 종료
+                    SystemNavigator.pop();
                   } else if (Platform.isIOS) {
-                    exit(0); // iOS에서는 강제 종료 (Apple 가이드라인상 권장되지 않음)
+                    exit(0);
                   }
                 }),
               ],
@@ -107,7 +100,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  // 공통 버튼 생성 함수
   Widget buildWideButton(BuildContext context, String text, Color color, VoidCallback onPressed) {
     return SizedBox(
       width: double.infinity,
@@ -122,5 +114,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
 
 

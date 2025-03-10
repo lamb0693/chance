@@ -22,7 +22,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
           if (barcodes.isNotEmpty) {
             final String qrData = barcodes.first.rawValue ?? "인식 실패";
             controller.dispose();
-            Navigator.pop(context, qrData); // QR 데이터 반환 후 종료
+            Navigator.pop(context, qrData);
           }
         },
       ),
@@ -35,5 +35,6 @@ class _QRScannerPageState extends State<QRScannerPage> {
     super.dispose();
   }
 }
+
 
 
