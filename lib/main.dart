@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cisco/register_qr.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'qr_scanner.dart'; // QR 스캐너 페이지 추가
@@ -87,6 +88,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 }),
                 buildWideButton(context, "지도로 이동", Colors.green, () {
                   // 지도 화면 이동 기능 추가 가능
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (context) => RegisterQRPage())
+                  );
                 }),
                 buildWideButton(context, "나가기", Colors.red, () {
                   if (Platform.isAndroid) {
