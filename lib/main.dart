@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cisco/register_qr.dart';
+import 'package:cisco/view_location.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -84,7 +85,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   );
                   updateDeviceInfo(); // QR 등록 후 등록 개수 업데이트
                 }),
-                buildWideButton(context, "지도로 이동", Colors.green, () {}),
+                buildWideButton(context, "지도로 이동", Colors.green, () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                        ViewLocationPage(listRegistered: listRegistered),
+                    ),
+                  );
+                }),
                 buildWideButton(context, "나가기", Colors.red, () {
                   if (Platform.isAndroid) {
                     SystemNavigator.pop();
